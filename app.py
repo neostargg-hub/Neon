@@ -1,398 +1,396 @@
-# app.py — Mobile Legends Bang Bang прототип v2.0
-from flask import Flask, render_template_string, request, session, redirect, url_for
+# app.py — Mobile Legends Bang Bang прототип v3.0 — ГРАФИЧЕСКАЯ MOBA
+from flask import Flask, render_template_string, request, session, redirect, url_for, jsonify
 import random
 import os
+import json
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24).hex()
 
-# --- РАСШИРЕННЫЕ ДАННЫЕ ГЕРОЕВ MLBB ---
+# --- ГЕРОИ (улучшенные характеристики) ---
 HEROES = {
-    "alusard": {"name": "Алукард", "hp": 120, "dmg": 28, "role": "Fighter", "skill": "Разрез"},
-    "miya": {"name": "Мия", "hp": 85, "dmg": 40, "role": "Marksman", "skill": "Град стрел"},
-    "tigreal": {"name": "Тигрил", "hp": 170, "dmg": 18, "role": "Tank", "skill": "Священный удар"},
-    "eudora": {"name": "Эвдора", "hp": 75, "dmg": 50, "role": "Mage", "skill": "Молния"}
+    "alusard": {"name": "Алукард", "hp": 150, "dmg": 30, "speed": 4, "color": "#ff4444", "role": "Fighter"},
+    "miya": {"name": "Мия", "hp": 100, "dmg": 45, "speed": 3, "color": "#44ff44", "role": "Marksman"},
+    "tigreal": {"name": "Тигрил", "hp": 200, "dmg": 20, "speed": 2, "color": "#4444ff", "role": "Tank"},
+    "eudora": {"name": "Эвдора", "hp": 90, "dmg": 55, "speed": 3, "color": "#ff44ff", "role": "Mage"}
 }
 
-# --- ПРЕДМЕТЫ (можно купить за золото) ---
-ITEMS = {
-    "blade": {"name": "Меч Отчаяния", "cost": 150, "dmg_bonus": 15, "hp_bonus": 0},
-    "armor": {"name": "Кираса", "cost": 120, "dmg_bonus": 0, "hp_bonus": 40},
-    "boots": {"name": "Сапоги скорости", "cost": 80, "dmg_bonus": 5, "hp_bonus": 10},
-    "blood": {"name": "Кровожадность", "cost": 200, "dmg_bonus": 20, "hp_bonus": 25}
-}
-
-# --- МОНСТРЫ (разных уровней) ---
-MONSTERS = {
-    "лесной крип": {"hp": 35, "dmg": 6, "gold": 50, "exp": 20},
-    "большой крип": {"hp": 50, "dmg": 10, "gold": 80, "exp": 35},
-    "черепаха": {"hp": 80, "dmg": 15, "gold": 150, "exp": 60},
-    "ЛОРД": {"hp": 150, "dmg": 25, "gold": 350, "exp": 150}
-}
-
-# --- СИСТЕМА УРОВНЕЙ ---
-LEVELS = {
-    1: {"exp_needed": 0},
-    2: {"exp_needed": 100},
-    3: {"exp_needed": 250},
-    4: {"exp_needed": 450},
-    5: {"exp_needed": 700}
-}
-
-# --- HTML ШАБЛОН (улучшенный интерфейс) ---
+# --- HTML С CANVAS И JAVASCRIPT ДЛЯ ИГРЫ ---
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MLBB v2.0 — Эволюция</title>
+    <title>MLBB v3.0 — Графическая MOBA</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style>
-        * { box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: linear-gradient(135deg, #0a0f1e 0%, #1a0f2e 100%);
-            color: #f0e68c; 
-            font-family: 'Arial', sans-serif; 
-            max-width: 600px; 
-            margin: 20px auto; 
-            padding: 15px;
-            text-shadow: 1px 1px 2px black;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            font-family: 'Arial', sans-serif;
         }
-        .header {
-            background: linear-gradient(45deg, #2c1a4d, #1a0f2e);
-            padding: 15px;
-            border-radius: 15px 15px 0 0;
-            border: 2px solid gold;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .version-badge {
-            background: gold;
-            color: black;
-            padding: 3px 10px;
+        #gameContainer {
+            background: #1a1a2e;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .game-area {
-            background: rgba(26, 31, 46, 0.95);
-            border: 2px solid #4a6fa5;
-            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 0 30px rgba(78, 114, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0,100,255,0.3);
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .stat-card {
-            background: #0d111c;
-            padding: 12px;
+        canvas { 
+            border: 3px solid #4a6fa5;
             border-radius: 10px;
-            border-left: 4px solid #ff4444;
+            display: block;
+            background: linear-gradient(135deg, #0f1a2c, #1a2a4a);
+            cursor: crosshair;
         }
-        .stat-card.enemy { border-left-color: #44ff44; }
-        .hp-bar {
-            width: 100%;
-            height: 20px;
-            background: #3a1a1a;
+        #ui {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: white;
+        }
+        .stats {
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
             border-radius: 10px;
-            margin: 8px 0;
-            border: 1px solid #555;
-        }
-        .hp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff4444, #ff6666);
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-        .exp-bar {
-            height: 8px;
-            background: #1a3a1a;
-            border-radius: 5px;
-            margin: 5px 0;
-        }
-        .exp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #44aaff, #88ccff);
-            border-radius: 5px;
+            border-left: 4px solid gold;
         }
         button {
             background: #2a3a5c;
             color: white;
             border: none;
-            padding: 12px 18px;
+            padding: 10px 20px;
             margin: 5px;
-            border-radius: 25px;
+            border-radius: 20px;
             font-weight: bold;
-            box-shadow: 0 4px 0 #0f1a2c;
             cursor: pointer;
-            transition: 0.15s;
             border: 1px solid #6a8cff;
-            font-size: 14px;
         }
-        button:hover { 
-            background: #3a5a8c; 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 0 #0f1a2c; 
+        button:hover { background: #3a5a8c; }
+        .danger { background: #6b2a2a; }
+        .success { background: #2a5a3a; }
+        #minimap {
+            width: 150px;
+            height: 150px;
+            background: #0a0f1e;
+            border: 2px solid gold;
+            border-radius: 10px;
+            margin-left: 20px;
         }
-        button:active { 
-            transform: translateY(2px); 
-            box-shadow: 0 2px 0 #0f1a2c; 
-        }
-        button:disabled {
-            opacity: 0.5;
-            transform: none;
-            box-shadow: 0 4px 0 #0f1a2c;
-            cursor: not-allowed;
-        }
-        .danger { background: #6b2a2a; border-color: #ff6666; }
-        .success { background: #2a5a3a; border-color: #66ff66; }
-        .shop { background: #5a4a2a; border-color: #ffcc66; }
-        .log {
-            background: #000000;
-            padding: 12px;
-            height: 160px;
-            overflow-y: auto;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-family: 'Courier New', monospace;
-            color: #aaffaa;
-            border: 1px inset #666;
-            font-size: 13px;
-        }
-        .inventory {
+        .flex-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin: 10px 0;
+            align-items: center;
         }
-        .item-badge {
-            background: #2a3a5c;
+        .log {
+            background: black;
+            color: #aaffaa;
             padding: 5px 10px;
-            border-radius: 15px;
+            border-radius: 5px;
             font-size: 12px;
-            border: 1px solid gold;
-        }
-        .gold { color: #FFD700; font-weight: bold; font-size: 18px; }
-        .shop-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 15px 0;
-        }
-        .shop-item {
-            background: #1a1f2e;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #4a6fa5;
+            max-width: 300px;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔥 MOBILE LEGENDS: BANG BANG 🔥</h1>
-        <span class="version-badge">⚡ ВЕРСИЯ 2.0 — ПРЕДМЕТЫ И ОПЫТ ⚡</span>
-    </div>
-
-    <div class="game-area">
+    <div id="gameContainer">
         {% if not session.get('hero') %}
-            <!-- ЭКРАН ВЫБОРА ГЕРОЯ (улучшенный) -->
-            <h2>👤 ВЫБЕРИТЕ ГЕРОЯ</h2>
-            <div style="display: grid; gap: 10px;">
-            {% for key, hero in heroes.items() %}
-                <div style="background: #0d111c; padding: 15px; border-radius: 10px; border: 1px solid #4a6fa5;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin:0;">{{ hero.name }}</h3>
-                            <span style="color: #aaa;">{{ hero.role }}</span>
-                        </div>
-                        <div style="text-align: right;">
-                            <div>❤️ {{ hero.hp }}</div>
-                            <div>⚔️ {{ hero.dmg }}</div>
-                        </div>
+            <!-- ЭКРАН ВЫБОРА ГЕРОЯ -->
+            <div style="color: white; padding: 30px;">
+                <h1 style="color: gold; text-align: center;">⚔️ ВЫБЕРИТЕ ГЕРОЯ ⚔️</h1>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px;">
+                    {% for key, hero in heroes.items() %}
+                    <div style="background: {{ hero.color }}20; padding: 20px; border-radius: 15px; border: 2px solid {{ hero.color }};">
+                        <h2 style="color: {{ hero.color }};">{{ hero.name }}</h2>
+                        <p>❤️ {{ hero.hp }} | ⚔️ {{ hero.dmg }}</p>
+                        <p>🏃 Скорость: {{ hero.speed }}</p>
+                        <p>🎭 {{ hero.role }}</p>
+                        <button onclick="location.href='/pick/{{ key }}'" 
+                                style="background: {{ hero.color }}; width: 100%; margin-top: 10px;">
+                            ВЫБРАТЬ
+                        </button>
                     </div>
-                    <div style="margin-top: 10px;">
-                        <b>🎯 Скилл:</b> {{ hero.skill }}
-                    </div>
-                    <button onclick="location.href='/pick/{{ key }}'" style="width: 100%; margin-top: 10px;">
-                        ВЫБРАТЬ {{ hero.name.upper() }}
-                    </button>
+                    {% endfor %}
                 </div>
-            {% endfor %}
             </div>
         {% else %}
-            <!-- ОСНОВНОЙ ИГРОВОЙ ЭКРАН v2.0 -->
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin:0;">🏆 {{ session['hero_name'] }}</h2>
-                <div class="gold">💰 {{ session['gold'] }}</div>
-            </div>
-            
-            <!-- Опыт и уровень -->
-            <div style="margin: 10px 0;">
-                <div style="display: flex; justify-content: space-between;">
-                    <span>⭐ Уровень {{ session['level'] }}</span>
-                    <span>{{ session['exp'] }}/{{ session['exp_needed'] }} EXP</span>
-                </div>
-                <div class="exp-bar">
-                    <div class="exp-fill" style="width: {{ (session['exp'] / session['exp_needed']) * 100 }}%;"></div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <b>{{ session['hero_name'] }}</b>
-                    <div>❤️ HP: {{ session['hp'] }}/{{ session['max_hp'] }}</div>
-                    <div class="hp-bar">
-                        <div class="hp-fill" style="width: {{ (session['hp'] / session['max_hp']) * 100 }}%;"></div>
+            <!-- ИГРОВОЙ ЭКРАН С CANVAS -->
+            <div class="flex-row">
+                <canvas id="gameCanvas" width="800" height="500"></canvas>
+                <div style="margin-left: 20px;">
+                    <div id="minimap">
+                        <canvas id="miniCanvas" width="150" height="150"></canvas>
                     </div>
-                    <div>⚔️ Атака: {{ session['dmg'] }}</div>
-                    <div>🛡️ Роль: {{ session['role'] }}</div>
-                </div>
-                
-                {% if session.get('enemy') %}
-                <div class="stat-card enemy">
-                    <b>{{ session['enemy_name'] }}</b>
-                    <div>❤️ HP: {{ session['enemy_hp'] }}/{{ session['enemy_max_hp'] }}</div>
-                    <div class="hp-bar">
-                        <div class="hp-fill" style="width: {{ (session['enemy_hp'] / session['enemy_max_hp']) * 100 }}%; background: #44aa44;"></div>
+                    <div class="stats" style="margin-top: 20px;">
+                        <h3 id="heroName">{{ session['hero_name'] }}</h3>
+                        <p>❤️ HP: <span id="hpDisplay">{{ session['hp'] }}</span>/{{ session['max_hp'] }}</p>
+                        <p>💰 Золото: <span id="goldDisplay">{{ session['gold'] }}</span></p>
+                        <p>⭐ Уровень: <span id="levelDisplay">{{ session['level'] }}</span></p>
+                        <p>🗡️ Убийств: <span id="killsDisplay">0</span></p>
                     </div>
-                    <div>⚔️ Атака: {{ session['enemy_dmg'] }}</div>
-                </div>
-                {% else %}
-                <div class="stat-card">
-                    <b>📊 Статистика</b>
-                    <div>⚔️ Убито мобов: {{ session.get('kills', 0) }}</div>
-                    <div>💀 Смертей: {{ session.get('deaths', 0) }}</div>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Инвентарь -->
-            {% if session.get('inventory') %}
-            <div>
-                <b>🎒 Инвентарь:</b>
-                <div class="inventory">
-                    {% for item in session['inventory'] %}
-                        <span class="item-badge">{{ item }}</span>
-                    {% endfor %}
+                    <div class="log" id="logDisplay">
+                        Игра началась!
+                    </div>
                 </div>
             </div>
-            {% endif %}
-
-            {% if session.get('enemy') %}
-                <!-- РЕЖИМ БОЯ -->
-                <form method="post" action="/attack">
-                    <button type="submit" class="danger">⚔️ АТАКОВАТЬ (обычная)</button>
-                    <button type="submit" formaction="/skill" class="danger" style="background:#8a4a2a;">
-                        ✨ {{ session.get('skill', 'СКИЛЛ') }}
-                    </button>
-                    <button type="submit" formaction="/flee" class="success">🏃 СБЕЖАТЬ</button>
-                </form>
-            {% else %}
-                <!-- МИРНЫЙ РЕЖИМ -->
-                <h3>🌍 КАРТА БОЯ</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <form method="post" action="/farm_small">
-                        <button type="submit" style="width:100%;">🌿 Малый крип</button>
-                    </form>
-                    <form method="post" action="/farm_big">
-                        <button type="submit" style="width:100%;">🌳 Большой крип</button>
-                    </form>
-                    <form method="post" action="/fight_turtle">
-                        <button type="submit" style="width:100%;">🐢 Черепаха</button>
-                    </form>
-                    <form method="post" action="/fight_lord">
-                        <button type="submit" class="danger" style="width:100%;">👑 ЛОРД</button>
-                    </form>
-                </div>
-                
-                <!-- МАГАЗИН -->
-                <h3 style="margin-top: 20px;">🏪 МАГАЗИН</h3>
-                <div class="shop-grid">
-                    {% for key, item in items.items() %}
-                    <div class="shop-item">
-                        <b>{{ item.name }}</b><br>
-                        <span class="gold">{{ item.cost }}💰</span><br>
-                        <small>⚔️+{{ item.dmg_bonus }} ❤️+{{ item.hp_bonus }}</small>
-                        <form method="post" action="/buy/{{ key }}" style="margin-top:5px;">
-                            <button type="submit" class="shop" style="padding:5px; width:100%;">КУПИТЬ</button>
-                        </form>
-                    </div>
-                    {% endfor %}
-                </div>
-                
-                <hr>
-                <div style="display: flex; gap: 5px;">
-                    <form method="post" action="/heal" style="flex:1;">
-                        <button type="submit" class="success" style="width:100%;">💚 Лечение (80💰)</button>
-                    </form>
-                    <form method="post" action="/reset" style="flex:1;">
-                        <button type="submit" style="background:#555; width:100%;">🔄 Сброс</button>
-                    </form>
-                </div>
-            {% endif %}
-
-            <!-- ЛОГ СОБЫТИЙ -->
-            <div class="log">
-                {% for msg in session.get('log', []) %}
-                    {{ msg }}<br>
-                {% endfor %}
+            <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                <button onclick="gameAction('attack')" class="danger">⚔️ АТАКА</button>
+                <button onclick="gameAction('skill')">✨ СКИЛЛ</button>
+                <button onclick="gameAction('move_up')">⬆️ ВВЕРХ</button>
+                <button onclick="gameAction('move_down')">⬇️ ВНИЗ</button>
+                <button onclick="gameAction('move_left')">⬅️ ВЛЕВО</button>
+                <button onclick="gameAction('move_right')">➡️ ВПРАВО</button>
+                <button onclick="gameAction('heal')" class="success">💚 ЛЕЧЕНИЕ</button>
+                <button onclick="location.href='/reset'">🔄 СБРОС</button>
             </div>
         {% endif %}
     </div>
+
+    {% if session.get('hero') %}
+    <script>
+        // ИГРОВЫЕ ДАННЫЕ ИЗ СЕССИИ
+        let gameState = {
+            hero: {
+                name: "{{ session['hero_name'] }}",
+                hp: {{ session['hp'] }},
+                maxHp: {{ session['max_hp'] }},
+                dmg: {{ session['dmg'] }},
+                x: 400,
+                y: 250,
+                color: "{{ session.get('color', '#ff4444') }}",
+                speed: {{ session.get('speed', 3) }}
+            },
+            enemies: [],
+            gold: {{ session['gold'] }},
+            level: {{ session['level'] }},
+            kills: 0,
+            log: ["Игра началась! Используйте кнопки для управления."]
+        };
+
+        // Генерация мобов
+        function spawnEnemy() {
+            if (gameState.enemies.length < 5) {
+                gameState.enemies.push({
+                    x: Math.random() * 700 + 50,
+                    y: Math.random() * 400 + 50,
+                    hp: 40,
+                    maxHp: 40,
+                    dmg: 10,
+                    type: "крип",
+                    color: "#88ff88",
+                    targetX: Math.random() * 700 + 50,
+                    targetY: Math.random() * 400 + 50
+                });
+            }
+        }
+
+        // Спавн каждые 5 секунд
+        setInterval(spawnEnemy, 5000);
+        spawnEnemy();
+        spawnEnemy();
+
+        // Отрисовка игры
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const miniCanvas = document.getElementById('miniCanvas');
+        const miniCtx = miniCanvas.getContext('2d');
+
+        function drawGame() {
+            // Очистка
+            ctx.clearRect(0, 0, 800, 500);
+            
+            // Рисуем линии (топ, мид, бот)
+            ctx.strokeStyle = "#ffffff30";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 150); ctx.lineTo(800, 150);
+            ctx.moveTo(0, 350); ctx.lineTo(800, 350);
+            ctx.stroke();
+            
+            // Рисуем башни
+            ctx.fillStyle = "#ffaa00";
+            ctx.beginPath();
+            ctx.arc(100, 150, 25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#00aaff";
+            ctx.beginPath();
+            ctx.arc(700, 350, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Текст башен
+            ctx.fillStyle = "white";
+            ctx.font = "bold 12px Arial";
+            ctx.fillText("🔥 TOP", 75, 145);
+            ctx.fillText("💧 BOT", 675, 345);
+
+            // Рисуем врагов
+            gameState.enemies.forEach(enemy => {
+                // Движение врагов
+                if (Math.random() < 0.02) {
+                    enemy.targetX = Math.random() * 700 + 50;
+                    enemy.targetY = Math.random() * 400 + 50;
+                }
+                
+                // Преследование героя если близко
+                const dx = gameState.hero.x - enemy.x;
+                const dy = gameState.hero.y - enemy.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 100) {
+                    enemy.targetX = gameState.hero.x;
+                    enemy.targetY = gameState.hero.y;
+                }
+                
+                // Движение к цели
+                if (Math.abs(enemy.x - enemy.targetX) > 2) {
+                    enemy.x += enemy.targetX > enemy.x ? 0.5 : -0.5;
+                }
+                if (Math.abs(enemy.y - enemy.targetY) > 2) {
+                    enemy.y += enemy.targetY > enemy.y ? 0.5 : -0.5;
+                }
+                
+                // Отрисовка врага
+                ctx.fillStyle = enemy.color;
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // HP бар врага
+                ctx.fillStyle = "#ff0000";
+                ctx.fillRect(enemy.x - 20, enemy.y - 30, 40, 5);
+                ctx.fillStyle = "#00ff00";
+                ctx.fillRect(enemy.x - 20, enemy.y - 30, 40 * (enemy.hp / enemy.maxHp), 5);
+                
+                // Текст
+                ctx.fillStyle = "white";
+                ctx.font = "10px Arial";
+                ctx.fillText(`${Math.floor(enemy.hp)}/${enemy.maxHp}`, enemy.x - 15, enemy.y - 35);
+            });
+
+            // Рисуем героя
+            ctx.fillStyle = gameState.hero.color;
+            ctx.shadowColor = gameState.hero.color;
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            ctx.arc(gameState.hero.x, gameState.hero.y, 22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Имя героя
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(gameState.hero.name, gameState.hero.x - 30, gameState.hero.y - 35);
+            
+            // HP бар героя
+            ctx.fillStyle = "#ff0000";
+            ctx.fillRect(gameState.hero.x - 30, gameState.hero.y - 25, 60, 8);
+            ctx.fillStyle = "#00ff00";
+            ctx.fillRect(gameState.hero.x - 30, gameState.hero.y - 25, 60 * (gameState.hero.hp / gameState.hero.maxHp), 8);
+
+            // Мини-карта
+            miniCtx.clearRect(0, 0, 150, 150);
+            miniCtx.fillStyle = "#0a0f1e";
+            miniCtx.fillRect(0, 0, 150, 150);
+            
+            // Герой на миникарте
+            miniCtx.fillStyle = gameState.hero.color;
+            miniCtx.beginPath();
+            miniCtx.arc(gameState.hero.x / 800 * 150, gameState.hero.y / 500 * 150, 5, 0, Math.PI * 2);
+            miniCtx.fill();
+            
+            // Враги на миникарте
+            miniCtx.fillStyle = "#ff4444";
+            gameState.enemies.forEach(enemy => {
+                miniCtx.beginPath();
+                miniCtx.arc(enemy.x / 800 * 150, enemy.y / 500 * 150, 3, 0, Math.PI * 2);
+                miniCtx.fill();
+            });
+
+            // Обновление UI
+            document.getElementById('hpDisplay').textContent = Math.floor(gameState.hero.hp);
+            document.getElementById('goldDisplay').textContent = gameState.gold;
+            document.getElementById('levelDisplay').textContent = gameState.level;
+            document.getElementById('killsDisplay').textContent = gameState.kills;
+            
+            const logDiv = document.getElementById('logDisplay');
+            logDiv.innerHTML = gameState.log.slice(-3).join('<br>');
+        }
+
+        // Игровые действия
+        function gameAction(action) {
+            fetch('/game_action', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    action: action,
+                    hero_x: gameState.hero.x,
+                    hero_y: gameState.hero.y,
+                    enemies: gameState.enemies
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    gameState.hero.hp = data.hero_hp;
+                    gameState.hero.maxHp = data.hero_max_hp;
+                    gameState.gold = data.gold;
+                    gameState.level = data.level;
+                    gameState.kills = data.kills;
+                    gameState.log = data.log;
+                    
+                    // Обновление врагов
+                    if (data.enemies) {
+                        gameState.enemies = data.enemies;
+                    }
+                    
+                    // Движение
+                    const speed = gameState.hero.speed || 3;
+                    if (action === 'move_up') gameState.hero.y = Math.max(30, gameState.hero.y - speed * 5);
+                    if (action === 'move_down') gameState.hero.y = Math.min(470, gameState.hero.y + speed * 5);
+                    if (action === 'move_left') gameState.hero.x = Math.max(30, gameState.hero.x - speed * 5);
+                    if (action === 'move_right') gameState.hero.x = Math.min(770, gameState.hero.x + speed * 5);
+                    
+                    if (gameState.hero.hp <= 0) {
+                        alert('💀 ВАС УБИЛИ! Воскрешение...');
+                        gameState.hero.hp = gameState.hero.maxHp / 2;
+                        gameState.hero.x = 400;
+                        gameState.hero.y = 250;
+                    }
+                }
+                drawGame();
+            });
+        }
+
+        // Авто-обновление каждые 100мс
+        setInterval(() => {
+            gameState.enemies = gameState.enemies.filter(e => e.hp > 0);
+            drawGame();
+        }, 100);
+
+        // Запуск отрисовки
+        drawGame();
+    </script>
+    {% endif %}
 </body>
 </html>
 '''
 
-# --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
-def add_log(message):
-    log = session.get('log', [])
-    log.append(message)
-    if len(log) > 10:
-        log.pop(0)
-    session['log'] = log
-
-def check_level_up():
-    current_level = session['level']
-    current_exp = session['exp']
-    
-    for level, data in LEVELS.items():
-        if level > current_level and current_exp >= data['exp_needed']:
-            session['level'] = level
-            session['max_hp'] += 25
-            session['hp'] = session['max_hp']
-            session['dmg'] += 8
-            add_log(f"🎉 УРОВЕНЬ {level}! HP +25, Атака +8!")
-            session['exp_needed'] = LEVELS.get(level + 1, {"exp_needed": 9999})['exp_needed']
-            return True
-    return False
-
-def init_enemy(enemy_key):
-    enemy = MONSTERS[enemy_key]
-    session['enemy'] = enemy_key
-    session['enemy_name'] = enemy_key.upper()
-    session['enemy_hp'] = enemy['hp']
-    session['enemy_max_hp'] = enemy['hp']
-    session['enemy_dmg'] = enemy['dmg']
-    session['enemy_gold'] = enemy['gold']
-    session['enemy_exp'] = enemy['exp']
-
-def calculate_damage(base_dmg, is_skill=False):
-    if is_skill:
-        return int(base_dmg * 1.8 + random.randint(-5, 10))
-    return base_dmg + random.randint(-3, 8)
-
-# --- МАРШРУТЫ FLASK v2.0 ---
+# --- FLASK МАРШРУТЫ ДЛЯ ГРАФИЧЕСКОЙ ИГРЫ ---
 
 @app.route('/')
 def index():
     if 'hero' not in session:
         session['hero'] = None
-    return render_template_string(HTML_TEMPLATE, heroes=HEROES, items=ITEMS)
+    return render_template_string(HTML_TEMPLATE, heroes=HEROES)
 
 @app.route('/pick/<hero_key>')
 def pick_hero(hero_key):
@@ -400,181 +398,96 @@ def pick_hero(hero_key):
     session.clear()
     session['hero'] = hero_key
     session['hero_name'] = hero['name']
-    session['role'] = hero['role']
-    session['skill'] = hero['skill']
     session['hp'] = hero['hp']
     session['max_hp'] = hero['hp']
     session['dmg'] = hero['dmg']
-    session['gold'] = 150
+    session['speed'] = hero['speed']
+    session['color'] = hero['color']
+    session['gold'] = 200
     session['level'] = 1
     session['exp'] = 0
-    session['exp_needed'] = LEVELS[2]['exp_needed']
     session['kills'] = 0
-    session['deaths'] = 0
-    session['inventory'] = []
-    session['log'] = [f"✅ Вы выбрали {hero['name']}!", f"🎯 Скилл: {hero['skill']}"]
-    session['enemy'] = None
+    session['log'] = ["✅ Герой выбран!", "🎮 Используйте WASD или кнопки"]
     return redirect(url_for('index'))
 
-@app.route('/buy/<item_key>', methods=['POST'])
-def buy_item(item_key):
-    if session.get('enemy'):
-        add_log("❌ Нельзя покупать в бою!")
-        return redirect(url_for('index'))
+@app.route('/game_action', methods=['POST'])
+def game_action():
+    data = request.json
+    action = data.get('action')
+    hero_x = data.get('hero_x', 400)
+    hero_y = data.get('hero_y', 250)
+    enemies = data.get('enemies', [])
     
-    item = ITEMS.get(item_key)
-    if not item:
-        return redirect(url_for('index'))
+    hero_hp = session.get('hp', 100)
+    hero_max_hp = session.get('max_hp', 100)
+    hero_dmg = session.get('dmg', 30)
+    gold = session.get('gold', 0)
+    level = session.get('level', 1)
+    kills = session.get('kills', 0)
+    log = session.get('log', [])
     
-    if session['gold'] >= item['cost']:
-        session['gold'] -= item['cost']
-        session['dmg'] += item['dmg_bonus']
-        session['max_hp'] += item['hp_bonus']
-        session['hp'] += item['hp_bonus']
-        inventory = session.get('inventory', [])
-        inventory.append(item['name'])
-        session['inventory'] = inventory
-        add_log(f"🛒 Куплено: {item['name']}! +{item['dmg_bonus']} атаки, +{item['hp_bonus']} HP")
-    else:
-        add_log(f"❌ Недостаточно золота для {item['name']}!")
-    
-    return redirect(url_for('index'))
-
-# Фарм разных мобов
-@app.route('/farm_small', methods=['POST'])
-def farm_small():
-    if session.get('enemy'): return redirect(url_for('index'))
-    init_enemy('лесной крип')
-    add_log("🌿 Вы напали на лесного крипа!")
-    return redirect(url_for('index'))
-
-@app.route('/farm_big', methods=['POST'])
-def farm_big():
-    if session.get('enemy'): return redirect(url_for('index'))
-    init_enemy('большой крип')
-    add_log("🌳 Большой крип рычит на вас!")
-    return redirect(url_for('index'))
-
-@app.route('/fight_turtle', methods=['POST'])
-def fight_turtle():
-    if session.get('enemy'): return redirect(url_for('index'))
-    init_enemy('черепаха')
-    add_log("🐢 Древняя Черепаха просыпается!")
-    return redirect(url_for('index'))
-
-@app.route('/fight_lord', methods=['POST'])
-def fight_lord():
-    if session.get('enemy'): return redirect(url_for('index'))
-    if session['level'] < 2:
-        add_log("❌ Лорд слишком силён! Нужен 2 уровень.")
-        return redirect(url_for('index'))
-    init_enemy('ЛОРД')
-    add_log("👑 ЛОРД ВЫХОДИТ НА АРЕНУ!")
-    return redirect(url_for('index'))
-
-@app.route('/attack', methods=['POST'])
-def attack():
-    if not session.get('enemy'):
-        return redirect(url_for('index'))
-    
-    # Атака игрока
-    player_dmg = calculate_damage(session['dmg'])
-    session['enemy_hp'] -= player_dmg
-    add_log(f"⚔️ Вы нанесли {player_dmg} урона!")
-
-    if session['enemy_hp'] <= 0:
-        # ПОБЕДА
-        gold_reward = session['enemy_gold']
-        exp_reward = session['enemy_exp']
-        session['gold'] += gold_reward
-        session['exp'] += exp_reward
-        session['kills'] = session.get('kills', 0) + 1
-        add_log(f"🎉 ПОБЕДА! +{gold_reward}💰 +{exp_reward} EXP!")
+    # Обработка действий
+    if action == 'attack' or action == 'skill':
+        dmg_multiplier = 2.0 if action == 'skill' else 1.0
+        attack_range = 80
         
-        if session['enemy'] == 'ЛОРД':
-            session['exp'] += 100  # Бонус за Лорда
-            add_log("👑 ЛОРД ПОВЕРЖЕН! +100 бонусного опыта!")
-        
-        if check_level_up():
-            pass  # Уровень уже поднят в функции
-        
-        session['enemy'] = None
-        return redirect(url_for('index'))
-
-    # Ответ врага
-    enemy_dmg = calculate_damage(session['enemy_dmg'])
-    session['hp'] -= enemy_dmg
-    add_log(f"💥 {session['enemy_name']} наносит {enemy_dmg} урона!")
-
-    if session['hp'] <= 0:
-        session['deaths'] = session.get('deaths', 0) + 1
-        add_log(f"💀 ВАС УБИЛИ... Потеряно 75 золота.")
-        session['hp'] = session['max_hp'] // 2
-        session['gold'] = max(0, session['gold'] - 75)
-        session['enemy'] = None
-
-    return redirect(url_for('index'))
-
-@app.route('/skill', methods=['POST'])
-def use_skill():
-    if not session.get('enemy'):
-        return redirect(url_for('index'))
+        for enemy in enemies:
+            dx = enemy['x'] - hero_x
+            dy = enemy['y'] - hero_y
+            dist = (dx**2 + dy**2)**0.5
+            
+            if dist < attack_range:
+                dmg = int(hero_dmg * dmg_multiplier + random.randint(-5, 10))
+                enemy['hp'] -= dmg
+                log.append(f"⚔️ Нанесено {dmg} урона!")
+                
+                if enemy['hp'] <= 0:
+                    gold += 50
+                    kills += 1
+                    log.append(f"🎉 Крип убит! +50💰")
+                else:
+                    # Ответный удар
+                    hero_hp -= enemy['dmg']
+                    log.append(f"💥 Крип наносит {enemy['dmg']} урона")
+                break
     
-    # Усиленная атака скиллом
-    skill_dmg = calculate_damage(session['dmg'], is_skill=True)
-    session['enemy_hp'] -= skill_dmg
-    add_log(f"✨ СКИЛЛ: {session['skill']}! Нанесено {skill_dmg} урона!")
-    
-    if session['enemy_hp'] <= 0:
-        return redirect(url_for('attack'))  # Перенаправляем на логику победы
-    
-    # Ответ врага (усиленный)
-    enemy_dmg = calculate_damage(session['enemy_dmg']) + 5
-    session['hp'] -= enemy_dmg
-    add_log(f"💢 Контратака! {session['enemy_name']} наносит {enemy_dmg} урона!")
-    
-    if session['hp'] <= 0:
-        session['deaths'] = session.get('deaths', 0) + 1
-        add_log(f"💀 Смерть после использования скилла...")
-        session['hp'] = session['max_hp'] // 2
-        session['gold'] = max(0, session['gold'] - 75)
-        session['enemy'] = None
-    
-    return redirect(url_for('index'))
-
-@app.route('/flee', methods=['POST'])
-def flee():
-    if session.get('enemy'):
-        if random.random() < 0.7:  # 70% шанс побега
-            add_log("🏃 Успешный побег! -20💰")
-            session['gold'] = max(0, session['gold'] - 20)
-            session['enemy'] = None
+    elif action == 'heal':
+        if gold >= 100:
+            gold -= 100
+            hero_hp = hero_max_hp
+            log.append("💚 Полное исцеление!")
         else:
-            add_log("❌ Не удалось сбежать!")
-            enemy_dmg = calculate_damage(session['enemy_dmg'])
-            session['hp'] -= enemy_dmg
-            add_log(f"💥 Враг наносит {enemy_dmg} урона при побеге!")
-            if session['hp'] <= 0:
-                session['deaths'] = session.get('deaths', 0) + 1
-                session['hp'] = session['max_hp'] // 2
-                session['gold'] = max(0, session['gold'] - 75)
-                session['enemy'] = None
-    return redirect(url_for('index'))
+            log.append("❌ Недостаточно золота!")
+    
+    # Удаление мёртвых врагов
+    enemies = [e for e in enemies if e['hp'] > 0]
+    
+    # Сохранение в сессию
+    session['hp'] = hero_hp
+    session['gold'] = gold
+    session['kills'] = kills
+    session['log'] = log[-10:]
+    
+    # Проверка смерти героя
+    if hero_hp <= 0:
+        hero_hp = hero_max_hp // 2
+        gold = max(0, gold - 100)
+        log.append("💀 Смерть! Потеряно 100💰")
+        session['hp'] = hero_hp
+        session['gold'] = gold
+    
+    return jsonify({
+        'success': True,
+        'hero_hp': hero_hp,
+        'hero_max_hp': hero_max_hp,
+        'gold': gold,
+        'level': level,
+        'kills': kills,
+        'log': log[-5:],
+        'enemies': enemies
+    })
 
-@app.route('/heal', methods=['POST'])
-def heal():
-    if session.get('enemy'):
-        add_log("❌ Нельзя лечиться в бою!")
-        return redirect(url_for('index'))
-    if session['gold'] >= 80:
-        session['gold'] -= 80
-        session['hp'] = session['max_hp']
-        add_log("💚 Полное исцеление!")
-    else:
-        add_log("❌ Нужно 80 золота!")
-    return redirect(url_for('index'))
-
-@app.route('/reset', methods=['POST'])
+@app.route('/reset')
 def reset():
     session.clear()
     return redirect(url_for('index'))
