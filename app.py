@@ -33,7 +33,6 @@ HTML = """<!DOCTYPE html>
       margin: 0 auto;
     }
 
-    /* АНИМАЦИИ ПОЯВЛЕНИЯ */
     @keyframes slideFadeIn {
       0% { opacity: 0; transform: translateY(25px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -302,10 +301,17 @@ HTML = """<!DOCTYPE html>
       animation: slideFadeIn 0.5s ease 1.5s forwards;
     }
 
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
     @media (max-width: 480px) {
       .title-slide { padding: 32px 20px; }
       .title-slide h1 { font-size: 36px; }
       .interactive-grid { grid-template-columns: 1fr 1fr; }
+      .two-columns { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -337,17 +343,17 @@ HTML = """<!DOCTYPE html>
     </div>
     <div class="interactive-grid">
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Nikolai_Lunin.jpg/440px-Nikolai_Lunin.jpg" alt="Николай Лунин" loading="lazy">
+        <img class="flip-image" src="https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Николай Лунин" loading="lazy">
         <div class="flip-label">Николай Лунин</div>
         <div class="flip-content">
-          <p><strong>1854-1937</strong> — русский педиатр. В 1880 году в диссертации «О значении неорганических солей для питания животных» доказал существование витаминов за 30 лет до их открытия.</p>
+          <p><strong>1854-1937</strong> — русский педиатр. В 1880 году в диссертации доказал существование витаминов за 30 лет до их открытия.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Casimir_Funk_01.jpg/440px-Casimir_Funk_01.jpg" alt="Казимир Функ" loading="lazy">
+        <img class="flip-image" src="https://images.pexels.com/photos/3683060/pexels-photo-3683060.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Казимир Функ" loading="lazy">
         <div class="flip-label">Казимир Функ</div>
         <div class="flip-content">
-          <p><strong>1884-1967</strong> — польский биохимик. В 1912 году выделил витамин B1 и придумал термин «витамин». Предсказал существование других витаминов.</p>
+          <p><strong>1884-1967</strong> — польский биохимик. В 1912 году выделил витамин B1 и придумал термин «витамин».</p>
         </div>
       </div>
     </div>
@@ -364,26 +370,24 @@ HTML = """<!DOCTYPE html>
     </div>
     <div class="interactive-grid">
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Цинга" loading="lazy">
+        <img class="flip-image" src="https://images.pexels.com/photos/4113834/pexels-photo-4113834.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Цинга и лимоны" loading="lazy">
         <div class="flip-label">Цинга и лимоны</div>
         <div class="flip-content">
-          <p>В 1747 году шотландский врач <strong>Джеймс Линд</strong> провёл первый клинический эксперимент: разделил 12 моряков с цингой на группы и давал разные добавки. Те, кто получал лимоны и апельсины, выздоравливали за 6 дней.</p>
-          <p>Так был найден витамин C, хотя само вещество выделили только в 1928 году.</p>
+          <p>В 1747 году <strong>Джеймс Линд</strong> провёл первый клинический эксперимент: моряки с цингой, получавшие лимоны, выздоравливали за 6 дней. Так был найден витамин C.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/3683060/pexels-photo-3683060.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Бери-бери" loading="lazy">
+        <img class="flip-image" src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Бери-бери и рис" loading="lazy">
         <div class="flip-label">Бери-бери и рис</div>
         <div class="flip-content">
-          <p>В 1897 году голландский врач <strong>Христиан Эйкман</strong> заметил, что куры, которых кормили полированным рисом, заболевали параличом (бери-бери). Добавление рисовых отрубей излечивало их.</p>
-          <p>Из отрубей позже выделили витамин B1 (тиамин). Эйкман получил Нобелевскую премию.</p>
+          <p>В 1897 году <strong>Христиан Эйкман</strong> заметил, что куры на полированном рисе заболевали параличом. Рисовые отруби излечивали их — так открыли витамин B1.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Рахит" loading="lazy">
+        <img class="flip-image" src="https://images.pexels.com/photos/4109937/pexels-photo-4109937.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Рахит и солнце" loading="lazy">
         <div class="flip-label">Рахит и солнце</div>
         <div class="flip-content">
-          <p>В 1919 году <strong>Эдвард Мелланби</strong> доказал, что рахит у собак излечивается рыбьим жиром. Позже выяснили, что ультрафиолет также лечит рахит — так открыли витамин D.</p>
+          <p>В 1919 году <strong>Эдвард Мелланби</strong> доказал, что рахит излечивается рыбьим жиром. Позже выяснили, что ультрафиолет также лечит рахит — открыли витамин D.</p>
         </div>
       </div>
     </div>
@@ -400,40 +404,35 @@ HTML = """<!DOCTYPE html>
         <img class="flip-image" src="https://images.pexels.com/photos/143133/pexels-photo-143133.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Морковь">
         <div class="flip-label">🥕 Морковь</div>
         <div class="flip-content">
-          <p><strong>Витамин A:</strong> 835 мкг на 100 г (83% нормы)</p>
+          <p><strong>Витамин A:</strong> 835 мкг (83% нормы)</p>
           <p><strong>Витамин K:</strong> 13 мкг</p>
           <p><strong>Витамин C:</strong> 6 мг</p>
-          <p>Бета-каротин превращается в витамин A только в присутствии жиров.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
         <img class="flip-image" src="https://images.pexels.com/photos/209555/pexels-photo-209555.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Апельсин">
         <div class="flip-label">🍊 Апельсин</div>
         <div class="flip-content">
-          <p><strong>Витамин C:</strong> 53 мг на 100 г (60% нормы)</p>
+          <p><strong>Витамин C:</strong> 53 мг (60% нормы)</p>
           <p><strong>Фолаты (B9):</strong> 30 мкг</p>
           <p><strong>Витамин B1:</strong> 0,09 мг</p>
-          <p>Один апельсин содержит почти суточную норму витамина C.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/4109937/pexels-photo-4109937.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Лосось">
+        <img class="flip-image" src="https://images.pexels.com/photos/4622893/pexels-photo-4622893.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Лосось">
         <div class="flip-label">🐟 Лосось</div>
         <div class="flip-content">
-          <p><strong>Витамин D:</strong> 11 мкг на 100 г (73% нормы)</p>
+          <p><strong>Витамин D:</strong> 11 мкг (73% нормы)</p>
           <p><strong>Витамин B12:</strong> 3 мкг (125% нормы)</p>
           <p><strong>Витамин B6:</strong> 0,8 мг</p>
-          <p>Дикий лосось содержит в 4 раза больше витамина D, чем фермерский.</p>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
         <img class="flip-image" src="https://images.pexels.com/photos/5945811/pexels-photo-5945811.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Миндаль">
         <div class="flip-label">🌰 Миндаль</div>
         <div class="flip-content">
-          <p><strong>Витамин E:</strong> 26 мг на 100 г (173% нормы)</p>
+          <p><strong>Витамин E:</strong> 26 мг (173% нормы)</p>
           <p><strong>Витамин B2:</strong> 1,1 мг (85% нормы)</p>
-          <p><strong>Витамин B7 (биотин):</strong> 50 мкг</p>
-          <p>Всего 30 г миндаля покрывают 50% суточной нормы витамина E.</p>
         </div>
       </div>
     </div>
@@ -454,156 +453,78 @@ HTML = """<!DOCTYPE html>
       <tr><td>Печень трески</td><td>D</td><td>250 мкг</td><td>1666%</td></tr>
       <tr><td>Чечевица</td><td>B9 (фолаты)</td><td>479 мкг</td><td>120%</td></tr>
       <tr><td>Красный перец</td><td>C</td><td>128 мг</td><td>142%</td></tr>
-      <tr><td>Яичный желток</td><td>B12</td><td>2 мкг</td><td>83%</td></tr>
     </table>
-    <div class="info-block">
-      <p><span class="highlight">Интересно:</span> Печень трески — абсолютный рекордсмен по витамину D (250 мкг/100 г). Достаточно 5 г в день для покрытия суточной нормы.</p>
-    </div>
   </div>
 
-  <!-- СЛАЙД 5: ВИТАМИН A -->
+  <!-- СЛАЙД 5: ВИТАМИН A И C (ДВЕ КОЛОНКИ) -->
   <div class="slide-card">
-    <div class="card-header">
-      <span class="vitamin-name">🥕 Витамин A (ретинол)</span>
-      <span class="vitamin-sub">жирорастворимый</span>
-    </div>
-    <div class="interactive-grid">
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/143133/pexels-photo-143133.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Морковь">
-        <div class="flip-label">Источники</div>
-        <div class="flip-content">
-          <ul>
-            <li>Печень (9000 мкг/100г)</li>
-            <li>Морковь (835 мкг)</li>
-            <li>Батат (709 мкг)</li>
-            <li>Шпинат (469 мкг)</li>
-            <li>Сливочное масло (684 мкг)</li>
-          </ul>
+    <div class="two-columns">
+      <div>
+        <div class="card-header" style="margin-bottom: 8px;">
+          <span class="vitamin-name" style="font-size: 22px;">🥕 Витамин A</span>
+          <span class="vitamin-sub">ретинол</span>
         </div>
-      </div>
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Функции">
-        <div class="flip-label">Функции</div>
-        <div class="flip-content">
-          <ul>
-            <li>Зрение (синтез родопсина)</li>
-            <li>Иммунитет</li>
-            <li>Рост и развитие клеток</li>
-            <li>Здоровье кожи и слизистых</li>
-          </ul>
+        <div class="flip-item" onclick="this.classList.toggle('active')" style="margin-bottom: 12px;">
+          <img class="flip-image" src="https://images.pexels.com/photos/143133/pexels-photo-143133.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Источники A" style="aspect-ratio: 16/9;">
+          <div class="flip-label">Источники</div>
+          <div class="flip-content">
+            <ul><li>Печень (9000 мкг)</li><li>Морковь (835 мкг)</li><li>Шпинат (469 мкг)</li></ul>
+          </div>
         </div>
+        <p><span class="highlight">Норма:</span> 1 мг (3300 МЕ). Дефицит — куриная слепота.</p>
       </div>
-    </div>
-    <div class="info-block">
-      <p><span class="highlight">Норма:</span> 1 мг (3300 МЕ). Дефицит — куриная слепота. Избыток токсичен (поражение печени). Бета-каротин из растений безопасен.</p>
+      <div>
+        <div class="card-header" style="margin-bottom: 8px;">
+          <span class="vitamin-name" style="font-size: 22px;">🍊 Витамин C</span>
+          <span class="vitamin-sub">аскорбиновая</span>
+        </div>
+        <div class="flip-item" onclick="this.classList.toggle('active')" style="margin-bottom: 12px;">
+          <img class="flip-image" src="https://images.pexels.com/photos/209555/pexels-photo-209555.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Источники C" style="aspect-ratio: 16/9;">
+          <div class="flip-label">Источники</div>
+          <div class="flip-content">
+            <ul><li>Шиповник (650 мг)</li><li>Перец (128 мг)</li><li>Киви (93 мг)</li></ul>
+          </div>
+        </div>
+        <p><span class="highlight">Норма:</span> 75-90 мг. Курильщикам +35 мг.</p>
+      </div>
     </div>
   </div>
 
-  <!-- СЛАЙД 6: ВИТАМИН C -->
+  <!-- СЛАЙД 6: ВИТАМИН D И E -->
   <div class="slide-card">
-    <div class="card-header">
-      <span class="vitamin-name">🍊 Витамин C (аскорбиновая)</span>
-      <span class="vitamin-sub">водорастворимый</span>
-    </div>
-    <div class="interactive-grid">
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/209555/pexels-photo-209555.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Источники C">
-        <div class="flip-label">Источники</div>
-        <div class="flip-content">
-          <ul>
-            <li>Шиповник (650 мг/100г)</li>
-            <li>Красный перец (128 мг)</li>
-            <li>Киви (93 мг)</li>
-            <li>Брокколи (89 мг)</li>
-            <li>Апельсин (53 мг)</li>
-          </ul>
+    <div class="two-columns">
+      <div>
+        <div class="card-header" style="margin-bottom: 8px;">
+          <span class="vitamin-name" style="font-size: 22px;">☀️ Витамин D</span>
+          <span class="vitamin-sub">кальциферол</span>
         </div>
-      </div>
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Эксперимент">
-        <div class="flip-label">Эксперимент</div>
-        <div class="flip-content">
-          <p>Лайнус Полинг (дважды нобелевский лауреат) принимал 3000 мг витамина C ежедневно и прожил 93 года. Он утверждал, что высокие дозы предотвращают простуду и рак.</p>
+        <div class="flip-item" onclick="this.classList.toggle('active')" style="margin-bottom: 12px;">
+          <img class="flip-image" src="https://images.pexels.com/photos/4622893/pexels-photo-4622893.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Источники D" style="aspect-ratio: 16/9;">
+          <div class="flip-label">Источники</div>
+          <div class="flip-content">
+            <ul><li>Печень трески (250 мкг)</li><li>Лосось (11 мкг)</li><li>Скумбрия (16 мкг)</li></ul>
+          </div>
         </div>
+        <p><span class="highlight">Норма:</span> 15-20 мкг. 80% россиян в дефиците.</p>
       </div>
-    </div>
-    <div class="info-block">
-      <p><span class="highlight">Норма:</span> 75-90 мг. Курильщикам +35 мг. Разрушается при нагреве. Безопасный предел — 2000 мг.</p>
+      <div>
+        <div class="card-header" style="margin-bottom: 8px;">
+          <span class="vitamin-name" style="font-size: 22px;">🌰 Витамин E</span>
+          <span class="vitamin-sub">токоферол</span>
+        </div>
+        <div class="flip-item" onclick="this.classList.toggle('active')" style="margin-bottom: 12px;">
+          <img class="flip-image" src="https://images.pexels.com/photos/5945811/pexels-photo-5945811.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Источники E" style="aspect-ratio: 16/9;">
+          <div class="flip-label">Источники</div>
+          <div class="flip-content">
+            <ul><li>Масло пшеницы (149 мг)</li><li>Миндаль (26 мг)</li><li>Подсолнечное масло (44 мг)</li></ul>
+          </div>
+        </div>
+        <p><span class="highlight">Норма:</span> 15 мг. «Витамин молодости».</p>
+      </div>
     </div>
   </div>
 
-  <!-- СЛАЙД 7: ВИТАМИН D -->
-  <div class="slide-card">
-    <div class="card-header">
-      <span class="vitamin-name">☀️ Витамин D (кальциферол)</span>
-      <span class="vitamin-sub">жирорастворимый</span>
-    </div>
-    <div class="interactive-grid">
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/4109937/pexels-photo-4109937.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Лосось">
-        <div class="flip-label">Источники</div>
-        <div class="flip-content">
-          <ul>
-            <li>Печень трески (250 мкг)</li>
-            <li>Лосось дикий (11 мкг)</li>
-            <li>Скумбрия (16 мкг)</li>
-            <li>Яичный желток (5 мкг)</li>
-            <li>Грибы (облучённые УФ)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/3683060/pexels-photo-3683060.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Солнце">
-        <div class="flip-label">Синтез на солнце</div>
-        <div class="flip-content">
-          <p>15-20 минут на солнце с открытыми руками и лицом дают 10000-20000 МЕ витамина D. В России с октября по март синтез практически отсутствует.</p>
-        </div>
-      </div>
-    </div>
-    <div class="info-block">
-      <p><span class="highlight">Норма:</span> 15-20 мкг (600-800 МЕ). 80% россиян испытывают дефицит. Безопасный предел — 100 мкг.</p>
-    </div>
-  </div>
-
-  <!-- СЛАЙД 8: ВИТАМИН E -->
-  <div class="slide-card">
-    <div class="card-header">
-      <span class="vitamin-name">🌰 Витамин E (токоферол)</span>
-      <span class="vitamin-sub">жирорастворимый</span>
-    </div>
-    <div class="interactive-grid">
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/5945811/pexels-photo-5945811.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Орехи">
-        <div class="flip-label">Источники</div>
-        <div class="flip-content">
-          <ul>
-            <li>Масло зародышей пшеницы (149 мг)</li>
-            <li>Подсолнечное масло (44 мг)</li>
-            <li>Миндаль (26 мг)</li>
-            <li>Авокадо (2 мг)</li>
-            <li>Шпинат (2 мг)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Функции">
-        <div class="flip-label">Функции</div>
-        <div class="flip-content">
-          <ul>
-            <li>Мощный антиоксидант</li>
-            <li>Защита клеточных мембран</li>
-            <li>Здоровье кожи и волос</li>
-            <li>Репродуктивная функция</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="info-block">
-      <p><span class="highlight">Норма:</span> 15 мг. «Витамин молодости». Безопасный предел — 1000 мг.</p>
-    </div>
-  </div>
-
-  <!-- СЛАЙД 9: ВИТАМИНЫ ГРУППЫ B -->
+  <!-- СЛАЙД 7: ВИТАМИНЫ ГРУППЫ B -->
   <div class="slide-card">
     <div class="card-header">
       <span class="vitamin-name">⚡ Витамины группы B</span>
@@ -621,49 +542,38 @@ HTML = """<!DOCTYPE html>
       <tr><td>B12 (кобаламин)</td><td>2-3 мкг</td><td>Печень, рыба, яйца, сыр</td></tr>
     </table>
     <div class="info-block">
-      <p><span class="highlight">Важно:</span> B12 содержится только в животных продуктах. Веганам необходимы добавки или обогащённые продукты.</p>
+      <p><span class="highlight">Важно:</span> B12 содержится только в животных продуктах. Веганам необходимы добавки.</p>
     </div>
   </div>
 
-  <!-- СЛАЙД 10: ВИТАМИН K -->
+  <!-- СЛАЙД 8: ВИТАМИН K -->
   <div class="slide-card">
     <div class="card-header">
-      <span class="vitamin-name">🥬 Витамин K (филлохинон)</span>
-      <span class="vitamin-sub">жирорастворимый</span>
+      <span class="vitamin-name">🥬 Витамин K</span>
+      <span class="vitamin-sub">филлохинон</span>
     </div>
     <div class="interactive-grid">
       <div class="flip-item" onclick="this.classList.toggle('active')">
         <img class="flip-image" src="https://images.pexels.com/photos/533360/pexels-photo-533360.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Зелень">
         <div class="flip-label">Источники</div>
         <div class="flip-content">
-          <ul>
-            <li>Петрушка (1640 мкг)</li>
-            <li>Капуста кейл (817 мкг)</li>
-            <li>Шпинат (483 мкг)</li>
-            <li>Брокколи (102 мкг)</li>
-            <li>Соевое масло (183 мкг)</li>
-          </ul>
+          <ul><li>Петрушка (1640 мкг)</li><li>Капуста кейл (817 мкг)</li><li>Шпинат (483 мкг)</li><li>Брокколи (102 мкг)</li></ul>
         </div>
       </div>
       <div class="flip-item" onclick="this.classList.toggle('active')">
-        <img class="flip-image" src="https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Функции">
+        <img class="flip-image" src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Функции">
         <div class="flip-label">Функции</div>
         <div class="flip-content">
-          <ul>
-            <li>Свёртывание крови</li>
-            <li>Здоровье костей</li>
-            <li>Синтез остеокальцина</li>
-            <li>Частично синтезируется в кишечнике</li>
-          </ul>
+          <ul><li>Свёртывание крови</li><li>Здоровье костей</li><li>Синтез остеокальцина</li></ul>
         </div>
       </div>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Норма:</span> 90-120 мкг. Название от немецкого «Koagulationsvitamin». Людям на антикоагулянтах нужно контролировать потребление.</p>
+      <p><span class="highlight">Норма:</span> 90-120 мкг. Название от «Koagulationsvitamin». Людям на антикоагулянтах — контроль.</p>
     </div>
   </div>
 
-  <!-- СЛАЙД 11: ИТОГИ И РЕКОМЕНДАЦИИ -->
+  <!-- СЛАЙД 9: ИТОГИ И РЕКОМЕНДАЦИИ -->
   <div class="slide-card">
     <div class="card-header">
       <span class="vitamin-name">✅ Итоги и рекомендации</span>
@@ -698,13 +608,9 @@ HTML = """<!DOCTYPE html>
 </div>
 
 <script>
-  // Закрываем другие открытые карточки при открытии новой (опционально)
   document.querySelectorAll('.flip-item').forEach(item => {
     item.addEventListener('click', function(e) {
-      // Можно раскомментировать для аккордеон-эффекта
-      // document.querySelectorAll('.flip-item').forEach(i => {
-      //   if (i !== this) i.classList.remove('active');
-      // });
+      // Плавное раскрытие/скрытие
     });
   });
 </script>
