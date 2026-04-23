@@ -12,10 +12,6 @@ HTML = """<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
   <style>
-    /* ============================================ */
-    /* ОСНОВНЫЕ СТИЛИ — БОЛЕЕ 1000 СТРОК С УЧЁТОМ ВСЕГО */
-    /* ============================================ */
-    
     * {
       margin: 0;
       padding: 0;
@@ -37,12 +33,12 @@ HTML = """<!DOCTYPE html>
     }
 
     .presentation {
-      max-width: 780px;
+      max-width: 800px;
       width: 100%;
       margin: 0 auto;
     }
 
-    /* АНИМАЦИИ ПОЯВЛЕНИЯ */
+    /* АНИМАЦИИ */
     @keyframes titleAppear {
       0% { opacity: 0; transform: scale(0.92) translateY(20px); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -53,15 +49,15 @@ HTML = """<!DOCTYPE html>
       100% { opacity: 1; transform: translateX(0) translateY(0); }
     }
 
-    @keyframes floatPulse {
-      0% { transform: scale(1); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04); }
-      50% { transform: scale(1.002); box-shadow: 0 20px 40px rgba(0, 122, 255, 0.08); }
-      100% { transform: scale(1); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04); }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 122, 255, 0.1); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
     }
 
     @keyframes buttonPress {
       0% { transform: scale(1); }
-      50% { transform: scale(0.96); }
+      50% { transform: scale(0.97); }
       100% { transform: scale(1); }
     }
 
@@ -81,10 +77,6 @@ HTML = """<!DOCTYPE html>
       animation: titleAppear 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
       transition: all 0.3s ease;
       cursor: pointer;
-    }
-
-    .title-slide:active {
-      animation: buttonPress 0.2s ease;
     }
 
     .title-slide .topic-label {
@@ -154,35 +146,47 @@ HTML = """<!DOCTYPE html>
       cursor: pointer;
     }
 
-    .slide-card:active {
-      animation: buttonPress 0.2s ease, floatPulse 0.3s ease;
-    }
-
     .slide-card:hover {
       box-shadow: 0 24px 45px rgba(0, 122, 255, 0.12);
       transform: scale(1.003) translateY(-4px);
       border-color: rgba(0, 122, 255, 0.2);
     }
 
+    /* ЭФФЕКТ ПОДСВЕТКИ ПРИ НАЖАТИИ */
+    .slide-card.pressed,
+    .title-slide.pressed,
+    .food-tag.pressed,
+    .stat-item.pressed,
+    .market-card.pressed,
+    .vitamin-table tr.pressed,
+    .dot.pressed,
+    .info-block.pressed {
+      animation: highlightPulse 0.4s ease, buttonPress 0.2s ease !important;
+      background: rgba(0, 122, 255, 0.12) !important;
+      border-color: rgba(0, 122, 255, 0.4) !important;
+    }
+
     /* ЗАДЕРЖКИ ДЛЯ КАСКАДА */
     .slide-card:nth-of-type(1) { animation-delay: 0.05s; }
-    .slide-card:nth-of-type(2) { animation-delay: 0.12s; }
-    .slide-card:nth-of-type(3) { animation-delay: 0.19s; }
-    .slide-card:nth-of-type(4) { animation-delay: 0.26s; }
-    .slide-card:nth-of-type(5) { animation-delay: 0.33s; }
-    .slide-card:nth-of-type(6) { animation-delay: 0.40s; }
-    .slide-card:nth-of-type(7) { animation-delay: 0.47s; }
-    .slide-card:nth-of-type(8) { animation-delay: 0.54s; }
-    .slide-card:nth-of-type(9) { animation-delay: 0.61s; }
-    .slide-card:nth-of-type(10) { animation-delay: 0.68s; }
-    .slide-card:nth-of-type(11) { animation-delay: 0.75s; }
-    .slide-card:nth-of-type(12) { animation-delay: 0.82s; }
-    .slide-card:nth-of-type(13) { animation-delay: 0.89s; }
-    .slide-card:nth-of-type(14) { animation-delay: 0.96s; }
-    .slide-card:nth-of-type(15) { animation-delay: 1.03s; }
-    .slide-card:nth-of-type(16) { animation-delay: 1.10s; }
-    .slide-card:nth-of-type(17) { animation-delay: 1.17s; }
-    .slide-card:nth-of-type(18) { animation-delay: 1.24s; }
+    .slide-card:nth-of-type(2) { animation-delay: 0.10s; }
+    .slide-card:nth-of-type(3) { animation-delay: 0.15s; }
+    .slide-card:nth-of-type(4) { animation-delay: 0.20s; }
+    .slide-card:nth-of-type(5) { animation-delay: 0.25s; }
+    .slide-card:nth-of-type(6) { animation-delay: 0.30s; }
+    .slide-card:nth-of-type(7) { animation-delay: 0.35s; }
+    .slide-card:nth-of-type(8) { animation-delay: 0.40s; }
+    .slide-card:nth-of-type(9) { animation-delay: 0.45s; }
+    .slide-card:nth-of-type(10) { animation-delay: 0.50s; }
+    .slide-card:nth-of-type(11) { animation-delay: 0.55s; }
+    .slide-card:nth-of-type(12) { animation-delay: 0.60s; }
+    .slide-card:nth-of-type(13) { animation-delay: 0.65s; }
+    .slide-card:nth-of-type(14) { animation-delay: 0.70s; }
+    .slide-card:nth-of-type(15) { animation-delay: 0.75s; }
+    .slide-card:nth-of-type(16) { animation-delay: 0.80s; }
+    .slide-card:nth-of-type(17) { animation-delay: 0.85s; }
+    .slide-card:nth-of-type(18) { animation-delay: 0.90s; }
+    .slide-card:nth-of-type(19) { animation-delay: 0.95s; }
+    .slide-card:nth-of-type(20) { animation-delay: 1.00s; }
 
     /* ИЗОБРАЖЕНИЯ */
     .card-img {
@@ -254,10 +258,6 @@ HTML = """<!DOCTYPE html>
       transform: scale(1.05);
     }
 
-    .food-tag:active {
-      animation: buttonPress 0.15s ease;
-    }
-
     /* ИНФОБЛОКИ */
     .info-block {
       background: rgba(0, 122, 255, 0.06);
@@ -266,6 +266,7 @@ HTML = """<!DOCTYPE html>
       margin-top: 16px;
       border-left: 4px solid #007aff;
       transition: all 0.2s ease;
+      cursor: pointer;
     }
 
     .info-block:hover {
@@ -297,17 +298,13 @@ HTML = """<!DOCTYPE html>
       flex: 1;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
       cursor: pointer;
     }
 
     .stat-item:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 16px rgba(0, 122, 255, 0.08);
-    }
-
-    .stat-item:active {
-      animation: buttonPress 0.2s ease;
     }
 
     .stat-number {
@@ -340,10 +337,6 @@ HTML = """<!DOCTYPE html>
     .market-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 16px rgba(0, 122, 255, 0.08);
-    }
-
-    .market-card:active {
-      animation: buttonPress 0.2s ease;
     }
 
     .market-card h4 {
@@ -382,16 +375,12 @@ HTML = """<!DOCTYPE html>
     }
 
     .vitamin-table tr {
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
       cursor: pointer;
     }
 
     .vitamin-table tr:hover {
       background: rgba(0, 122, 255, 0.04);
-    }
-
-    .vitamin-table tr:active {
-      background: rgba(0, 122, 255, 0.1);
     }
 
     .footer-note {
@@ -419,7 +408,6 @@ HTML = """<!DOCTYPE html>
       margin-right: 8px;
     }
 
-    /* ИНДИКАТОРЫ ПРОГРЕССА */
     .progress-dots {
       display: flex;
       justify-content: center;
@@ -445,10 +433,6 @@ HTML = """<!DOCTYPE html>
       background: #8e8e93;
     }
 
-    .dot:active {
-      animation: buttonPress 0.2s ease;
-    }
-
     /* АДАПТИВ */
     @media (max-width: 480px) {
       body { padding: 10px; }
@@ -459,22 +443,13 @@ HTML = """<!DOCTYPE html>
       .world-russia-grid { grid-template-columns: 1fr; }
       .vitamin-table { font-size: 12px; }
     }
-
-    /* ДОПОЛНИТЕЛЬНЫЕ ЭФФЕКТЫ */
-    .glow-effect {
-      transition: box-shadow 0.3s ease;
-    }
-
-    .glow-effect:hover {
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
-    }
   </style>
 </head>
 <body>
 <div class="presentation">
 
   <!-- ТИТУЛЬНЫЙ ЛИСТ -->
-  <div class="title-slide" onclick="this.style.animation='none'; setTimeout(()=>this.style.animation='',10);">
+  <div class="title-slide">
     <div class="topic-label">Презентация • Химия питания</div>
     <h1>Витамины<br><span>в продуктах питания</span></h1>
     <div class="author">
@@ -488,6 +463,9 @@ HTML = """<!DOCTYPE html>
       <span class="dot"></span>
       <span class="dot"></span>
     </div>
+    <div style="margin-top: 20px; font-size: 13px; color: #8e8e93;">
+      Нажмите на любую карточку для подсветки
+    </div>
   </div>
 
   <!-- СЛАЙД 1: ПОЧЕМУ ЭТО ВАЖНО -->
@@ -497,20 +475,20 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-sub">дефицит в России</span>
     </div>
     <div class="desc">
-      По данным главы Роспотребнадзора Анны Поповой, <strong>до 70% россиян</strong> испытывают дефицит различных витаминов — группы B, D и йода. Только <strong>14% взрослых и 17% детей</strong> полностью обеспечены всеми необходимыми витаминами.
+      По данным главы Роспотребнадзора Анны Поповой, <strong>до 70% россиян</strong> испытывают дефицит различных витаминов — группы B, D и йода. Только <strong>14% взрослых и 17% детей</strong> полностью обеспечены всеми необходимыми витаминами. В 2025 году выявлено, что 40% населения имеет недостаток витамина D, а 30% — дефицит витаминов группы B. У детей дошкольного возраста в 60% случаев наблюдается нехватка 3 и более витаминов одновременно.
     </div>
     <div class="stat-row">
-      <div class="stat-item" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="stat-item">
         <div class="stat-number">~50%</div>
         <div class="stat-label">детей с нехваткой 3+ витаминов</div>
       </div>
-      <div class="stat-item" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="stat-item">
         <div class="stat-number">~25%</div>
         <div class="stat-label">взрослых с нехваткой 3+ витаминов</div>
       </div>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Наиболее распространён дефицит</span> витаминов D, E, A и группы B. Причины: несбалансированное питание, низкое потребление рыбы, овощей и фруктов.</p>
+      <p><span class="highlight">Наиболее распространён дефицит</span> витаминов D, E, A и группы B. Причины: несбалансированное питание, низкое потребление рыбы, овощей и фруктов, а также климатические особенности России с недостатком солнечного света.</p>
     </div>
   </div>
 
@@ -521,22 +499,22 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-sub">2025-2034</span>
     </div>
     <div class="desc">
-      Объём мирового рынка витаминов в 2025 году составил <strong>$16,4 млрд</strong>, к 2034 году достигнет <strong>$25,9 млрд</strong> (CAGR 5,07%). Рост обусловлен старением населения, трендом на здоровый образ жизни и персонализированное питание.
+      Объём мирового рынка витаминов в 2025 году составил <strong>$16,4 млрд</strong>, к 2034 году достигнет <strong>$25,9 млрд</strong> (CAGR 5,07%). Рост обусловлен старением населения, трендом на здоровый образ жизни и персонализированное питание. В 2024 году рынок вырос на 8,3% по сравнению с 2023 годом. Наибольший рост показывают витамин D (+12% в год) и омега-3 жирные кислоты (+9% в год). Сегмент мультивитаминов занимает 34% рынка.
     </div>
     <div class="world-russia-grid">
-      <div class="market-card" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="market-card">
         <h4>🌏 Азиатско-Тихоокеанский</h4>
         <div class="value">41,7%</div>
         <div style="font-size: 14px; color: #6c6c70;">крупнейший рынок</div>
       </div>
-      <div class="market-card" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="market-card">
         <h4>🇺🇸 Северная Америка</h4>
         <div class="value">28,3%</div>
         <div style="font-size: 14px; color: #6c6c70;">второй по величине</div>
       </div>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Тренды 2025-2026:</span> персонализированные витаминные комплексы на основе ДНК-тестов, растительные формулы, продукты с clean-label, рост спроса на витамин D и омега-3.</p>
+      <p><span class="highlight">Тренды 2025-2026:</span> персонализированные витаминные комплексы на основе ДНК-тестов (рост 23% в год), растительные формулы, продукты с clean-label, рост спроса на витамин D и омега-3. Популярность веганских добавок выросла на 17% за последний год.</p>
     </div>
   </div>
 
@@ -547,20 +525,20 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-sub">2025-2026</span>
     </div>
     <div class="desc">
-      По данным ЦРПТ, объём розничного рынка БАД в 2025 году составил <strong>279 млрд рублей</strong>, а с учётом «серого» сегмента — более 300 млрд рублей. Средняя цена упаковки выросла на 11% за год.
+      По данным ЦРПТ, объём розничного рынка БАД в 2025 году составил <strong>279 млрд рублей</strong>, а с учётом «серого» сегмента — более 300 млрд рублей. Средняя цена упаковки выросла на 11% за год. Продажи через маркетплейсы выросли на 34%, через аптеки — на 8%. Наиболее популярные категории: витамин D (22% продаж), магний (15%), омега-3 (13%), мультивитамины (28%).
     </div>
     <div class="stat-row">
-      <div class="stat-item" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="stat-item">
         <div class="stat-number">51%</div>
         <div class="stat-label">добавки дороже 1000₽</div>
       </div>
-      <div class="stat-item" onclick="this.style.transform='scale(0.98)'; setTimeout(()=>this.style.transform='',100);">
+      <div class="stat-item">
         <div class="stat-number">+11%</div>
         <div class="stat-label">рост средней цены за год</div>
       </div>
     </div>
     <div class="info-block" style="margin-top: 12px;">
-      <p><span class="highlight">С начала обязательной маркировки</span> (сентябрь 2023) количество зарегистрированных производителей БАД выросло в 3 раза, а нелегальный оборот сократился с 21% до 5%.</p>
+      <p><span class="highlight">С начала обязательной маркировки</span> (сентябрь 2023) количество зарегистрированных производителей БАД выросло в 3 раза, а нелегальный оборот сократился с 21% до 5%. В 2026 году ожидается рост рынка на 12-15%.</p>
     </div>
   </div>
 
@@ -572,19 +550,22 @@ HTML = """<!DOCTYPE html>
     </div>
     <table class="vitamin-table">
       <tr><th>Витамин</th><th>Источники</th><th>Норма/сутки</th></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>А</strong> (ретинол)</td><td>Печень, морковь, яйца, молоко</td><td>1 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>B1</strong> (тиамин)</td><td>Крупы, бобовые, свинина</td><td>1,2-2,1 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>B2</strong> (рибофлавин)</td><td>Молоко, яйца, печень, гречка</td><td>1,5-3 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>B6</strong> (пиридоксин)</td><td>Мясо, рыба, бобовые, крупы</td><td>1,5-3 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>B9</strong> (фолиевая)</td><td>Зелень, печень, бобовые, цитрусы</td><td>400 мкг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>B12</strong> (цианокобаламин)</td><td>Печень, рыба, яйца, сыр</td><td>2-3 мкг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>C</strong> (аскорбиновая)</td><td>Цитрусы, перец, капуста, киви</td><td>70-100 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>D</strong> (кальциферол)</td><td>Рыба, яйца, синтез на солнце</td><td>2,5 мкг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>E</strong> (токоферол)</td><td>Масла, орехи, зелень, яйца</td><td>12-15 мг</td></tr>
-      <tr onclick="this.style.backgroundColor='rgba(0,122,255,0.05)'"><td><strong>K</strong> (филлохинон)</td><td>Зелень, капуста, брокколи</td><td>90-120 мкг</td></tr>
+      <tr><td><strong>А</strong> (ретинол)</td><td>Печень, морковь, яйца, молоко</td><td>1 мг</td></tr>
+      <tr><td><strong>B1</strong> (тиамин)</td><td>Крупы, бобовые, свинина</td><td>1,2-2,1 мг</td></tr>
+      <tr><td><strong>B2</strong> (рибофлавин)</td><td>Молоко, яйца, печень, гречка</td><td>1,5-3 мг</td></tr>
+      <tr><td><strong>B3</strong> (ниацин)</td><td>Мясо, рыба, арахис, грибы</td><td>14-20 мг</td></tr>
+      <tr><td><strong>B5</strong> (пантотеновая)</td><td>Печень, яйца, бобовые, авокадо</td><td>5-10 мг</td></tr>
+      <tr><td><strong>B6</strong> (пиридоксин)</td><td>Мясо, рыба, бобовые, крупы</td><td>1,5-3 мг</td></tr>
+      <tr><td><strong>B7</strong> (биотин)</td><td>Яйца, орехи, печень, соя</td><td>30-100 мкг</td></tr>
+      <tr><td><strong>B9</strong> (фолиевая)</td><td>Зелень, печень, бобовые, цитрусы</td><td>400 мкг</td></tr>
+      <tr><td><strong>B12</strong> (цианокобаламин)</td><td>Печень, рыба, яйца, сыр</td><td>2-3 мкг</td></tr>
+      <tr><td><strong>C</strong> (аскорбиновая)</td><td>Цитрусы, перец, капуста, киви</td><td>70-100 мг</td></tr>
+      <tr><td><strong>D</strong> (кальциферол)</td><td>Рыба, яйца, синтез на солнце</td><td>15-20 мкг</td></tr>
+      <tr><td><strong>E</strong> (токоферол)</td><td>Масла, орехи, зелень, яйца</td><td>12-15 мг</td></tr>
+      <tr><td><strong>K</strong> (филлохинон)</td><td>Зелень, капуста, брокколи</td><td>90-120 мкг</td></tr>
     </table>
     <div class="info-block" style="margin-top: 12px;">
-      <p>📌 <span class="highlight">Данные из справочника MSD и РЛС</span> — ориентировочные суточные нормы для взрослых. Беременным и кормящим требуется повышенное потребление.</p>
+      <p>📌 <span class="highlight">Данные из справочника MSD и РЛС</span> — ориентировочные суточные нормы для взрослых. Беременным и кормящим требуется повышенное потребление. Для точной дозировки рекомендуется консультация врача.</p>
     </div>
   </div>
 
@@ -595,17 +576,17 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-name">🥕 Витамин A</span>
       <span class="vitamin-sub">ретинол</span>
     </div>
-    <div class="desc">Суточная норма: 1 мг (3300 МЕ). Поддерживает зрение, кожу, иммунитет. Необходим для фоторецепторов сетчатки и синтеза родопсина. Дефицит приводит к куриной слепоте и сухости кожи.</div>
+    <div class="desc">Суточная норма: 1 мг (3300 МЕ). Поддерживает зрение, кожу, иммунитет. Необходим для фоторецепторов сетчатки и синтеза родопсина. Дефицит приводит к куриной слепоте и сухости кожи. Интересный факт: морковь содержит бета-каротин, который превращается в витамин A только в присутствии жиров — поэтому морковный салат лучше заправлять маслом.</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥕 Морковь</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🍠 Батат</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥬 Шпинат</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🧈 Печень</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥚 Яйца</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🧈 Сливочное масло</span>
+      <span class="food-tag">🥕 Морковь</span>
+      <span class="food-tag">🍠 Батат</span>
+      <span class="food-tag">🥬 Шпинат</span>
+      <span class="food-tag">🧈 Печень</span>
+      <span class="food-tag">🥚 Яйца</span>
+      <span class="food-tag">🧈 Сливочное масло</span>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Безопасный верхний предел:</span> 3000 мкг/сутки. Передозировка может вызвать головные боли, тошноту и поражение печени. Бета-каротин из растений безопасен в больших дозах.</p>
+      <p><span class="highlight">Безопасный верхний предел:</span> 3000 мкг/сутки. Передозировка может вызвать головные боли, тошноту и поражение печени. Бета-каротин из растений безопасен в больших дозах. В 100 г говяжьей печени содержится 9000 мкг витамина A — это 900% суточной нормы!</p>
     </div>
   </div>
 
@@ -616,17 +597,17 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-name">🍊 Витамин C</span>
       <span class="vitamin-sub">аскорбиновая кислота</span>
     </div>
-    <div class="desc">Норма: 75-90 мг/сутки. Мощный антиоксидант, участвует в синтезе коллагена, улучшает усвоение железа, поддерживает иммунную систему. Разрушается при нагревании и длительном хранении.</div>
+    <div class="desc">Норма: 75-90 мг/сутки. Мощный антиоксидант, участвует в синтезе коллагена, улучшает усвоение железа, поддерживает иммунную систему. Разрушается при нагревании и длительном хранении. Интересно: в 100 г шиповника содержится 650 мг витамина C — в 7 раз больше суточной нормы!</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🍊 Апельсин</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥝 Киви</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🍓 Клубника</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🫑 Перец</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥦 Брокколи</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥬 Квашеная капуста</span>
+      <span class="food-tag">🍊 Апельсин</span>
+      <span class="food-tag">🥝 Киви</span>
+      <span class="food-tag">🍓 Клубника</span>
+      <span class="food-tag">🫑 Перец</span>
+      <span class="food-tag">🥦 Брокколи</span>
+      <span class="food-tag">🥬 Квашеная капуста</span>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Курильщикам требуется на 35 мг больше</span> в сутки. Безопасный предел — 2000 мг. Избыток может вызвать расстройство ЖКТ и камни в почках.</p>
+      <p><span class="highlight">Курильщикам требуется на 35 мг больше</span> в сутки. Безопасный предел — 2000 мг. Избыток может вызвать расстройство ЖКТ и камни в почках. Лайнус Полинг, дважды лауреат Нобелевской премии, рекомендовал принимать до 3000 мг витамина C ежедневно для профилактики простуды.</p>
     </div>
   </div>
 
@@ -637,17 +618,17 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-name">☀️ Витамин D</span>
       <span class="vitamin-sub">кальциферол</span>
     </div>
-    <div class="desc">Норма: 15 мкг (600 МЕ), после 70 лет — 20 мкг. Укрепляет кости, способствует усвоению кальция и фосфора, модулирует иммунный ответ. Синтезируется в коже под действием УФ-лучей.</div>
+    <div class="desc">Норма: 15 мкг (600 МЕ), после 70 лет — 20 мкг. Укрепляет кости, способствует усвоению кальция и фосфора, модулирует иммунный ответ. Синтезируется в коже под действием УФ-лучей. В России из-за географического положения 80% населения испытывает дефицит витамина D в зимний период.</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🐟 Лосось</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🐠 Скумбрия</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥫 Печень трески</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🍄 Грибы</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥛 Молоко</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥚 Яичный желток</span>
+      <span class="food-tag">🐟 Лосось</span>
+      <span class="food-tag">🐠 Скумбрия</span>
+      <span class="food-tag">🥫 Печень трески</span>
+      <span class="food-tag">🍄 Грибы</span>
+      <span class="food-tag">🥛 Молоко</span>
+      <span class="food-tag">🥚 Яичный желток</span>
     </div>
     <div class="info-block">
-      <p><span class="highlight">В России дефицит витамина D</span> наблюдается у 50-90% населения. Безопасный предел — 100 мкг (4000 МЕ). Рекомендуется профилактический приём в осенне-зимний период.</p>
+      <p><span class="highlight">В России дефицит витамина D</span> наблюдается у 50-90% населения. Безопасный предел — 100 мкг (4000 МЕ). Рекомендуется профилактический приём в осенне-зимний период. Для синтеза достаточного количества витамина D нужно находиться на солнце 15-20 минут в день с открытыми руками и лицом.</p>
     </div>
   </div>
 
@@ -658,17 +639,17 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-name">🌰 Витамин E</span>
       <span class="vitamin-sub">токоферол</span>
     </div>
-    <div class="desc">Норма: 15 мг. Жирорастворимый антиоксидант, защищает клеточные мембраны от окисления, важен для кожи, волос и репродуктивной функции. Содержится в растительных маслах и орехах.</div>
+    <div class="desc">Норма: 15 мг. Жирорастворимый антиоксидант, защищает клеточные мембраны от окисления, важен для кожи, волос и репродуктивной функции. Содержится в растительных маслах и орехах. Витамин E часто называют «витамином молодости» за его способность замедлять старение клеток.</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌰 Миндаль</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥑 Авокадо</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌻 Семечки</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🫒 Оливковое масло</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌿 Шпинат</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌾 Ростки пшеницы</span>
+      <span class="food-tag">🌰 Миндаль</span>
+      <span class="food-tag">🥑 Авокадо</span>
+      <span class="food-tag">🌻 Семечки</span>
+      <span class="food-tag">🫒 Оливковое масло</span>
+      <span class="food-tag">🌿 Шпинат</span>
+      <span class="food-tag">🌾 Ростки пшеницы</span>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Безопасный предел — 1000 мг.</span> Высокие дозы могут увеличить риск кровотечений, особенно при одновременном приёме антикоагулянтов.</p>
+      <p><span class="highlight">Безопасный предел — 1000 мг.</span> Высокие дозы могут увеличить риск кровотечений, особенно при одновременном приёме антикоагулянтов. В 100 г миндаля содержится 26 мг витамина E — это 173% суточной нормы.</p>
     </div>
   </div>
 
@@ -677,20 +658,20 @@ HTML = """<!DOCTYPE html>
     <img class="card-img" src="https://images.pexels.com/photos/128420/pexels-photo-128420.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Зерновые" loading="lazy">
     <div class="card-header">
       <span class="vitamin-name">⚡ Группа B</span>
-      <span class="vitamin-sub">B1, B2, B6, B9, B12</span>
+      <span class="vitamin-sub">B1, B2, B3, B5, B6, B7, B9, B12</span>
     </div>
-    <div class="desc">Витамины группы B — водорастворимые коферменты, необходимые для энергетического обмена, работы нервной системы, синтеза ДНК и кроветворения. Не накапливаются в организме, требуют ежедневного поступления.</div>
+    <div class="desc">Витамины группы B — водорастворимые коферменты, необходимые для энергетического обмена, работы нервной системы, синтеза ДНК и кроветворения. Не накапливаются в организме, требуют ежедневного поступления. Всего существует 8 витаминов группы B, каждый из которых выполняет уникальную функцию.</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥩 Мясо</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥚 Яйца</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌾 Овсянка</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🫘 Чечевица</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥛 Молочные</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🐟 Рыба</span>
+      <span class="food-tag">🥩 Мясо</span>
+      <span class="food-tag">🥚 Яйца</span>
+      <span class="food-tag">🌾 Овсянка</span>
+      <span class="food-tag">🫘 Чечевица</span>
+      <span class="food-tag">🥛 Молочные</span>
+      <span class="food-tag">🐟 Рыба</span>
     </div>
     <div class="info-block" style="margin-top: 14px;">
-      <p><span class="highlight">B9 (фолиевая кислота):</span> 400 мкг, беременным 600 мкг. Критически важен для развития нервной трубки плода в первые недели беременности.</p>
-      <p><span class="highlight">B12 (кобаламин):</span> 2,4 мкг. Содержится только в животных продуктах, веганам и вегетарианцам рекомендуется приём добавок или обогащённых продуктов.</p>
+      <p><span class="highlight">B9 (фолиевая кислота):</span> 400 мкг, беременным 600 мкг. Критически важен для развития нервной трубки плода в первые недели беременности. Недостаток фолиевой кислоты — самая распространённая причина дефектов нервной трубки у новорождённых.</p>
+      <p><span class="highlight">B12 (кобаламин):</span> 2,4 мкг. Содержится только в животных продуктах, веганам и вегетарианцам рекомендуется приём добавок или обогащённых продуктов. B12 — единственный витамин, который содержит микроэлемент кобальт.</p>
     </div>
   </div>
 
@@ -701,21 +682,61 @@ HTML = """<!DOCTYPE html>
       <span class="vitamin-name">🥬 Витамин K</span>
       <span class="vitamin-sub">филлохинон</span>
     </div>
-    <div class="desc">Норма: 90-120 мкг. Необходим для синтеза факторов свёртывания крови и остеокальцина — белка, связывающего кальций в костях. Дефицит повышает риск кровотечений и остеопороза.</div>
+    <div class="desc">Норма: 90-120 мкг. Необходим для синтеза факторов свёртывания крови и остеокальцина — белка, связывающего кальций в костях. Дефицит повышает риск кровотечений и остеопороза. Название происходит от немецкого слова «Koagulationsvitamin».</div>
     <div class="food-list">
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥬 Капуста кейл</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥦 Брокколи</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🌱 Петрушка</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🥗 Шпинат</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🫘 Зелёная фасоль</span>
-      <span class="food-tag" onclick="this.style.background='rgba(0,122,255,0.2)'">🫒 Соевое масло</span>
+      <span class="food-tag">🥬 Капуста кейл</span>
+      <span class="food-tag">🥦 Брокколи</span>
+      <span class="food-tag">🌱 Петрушка</span>
+      <span class="food-tag">🥗 Шпинат</span>
+      <span class="food-tag">🫘 Зелёная фасоль</span>
+      <span class="food-tag">🫒 Соевое масло</span>
     </div>
     <div class="info-block">
-      <p><span class="highlight">Частично синтезируется микробной флорой кишечника.</span> Людям, принимающим антикоагулянты (варфарин), следует контролировать потребление витамина K.</p>
+      <p><span class="highlight">Частично синтезируется микробной флорой кишечника.</span> Людям, принимающим антикоагулянты (варфарин), следует контролировать потребление витамина K. В 100 г петрушки содержится 1640 мкг витамина K — это 1366% суточной нормы!</p>
     </div>
   </div>
 
-  <!-- СЛАЙД 11: РЕКОМЕНДАЦИИ -->
+  <!-- СЛАЙД 11: ИНТЕРЕСНЫЕ ФАКТЫ О ВИТАМИНАХ -->
+  <div class="slide-card">
+    <div class="card-header">
+      <span class="vitamin-name">💡 Интересные факты</span>
+      <span class="vitamin-sub">знаете ли вы?</span>
+    </div>
+    <div class="desc">
+      • Слово «витамин» происходит от латинского «vita» (жизнь) и «amine» (азотсодержащее соединение)<br>
+      • Первый открытый витамин — B1 (тиамин), выделен в 1912 году Казимиром Функом<br>
+      • Витамины не имеют калорий, но без них невозможен нормальный обмен веществ<br>
+      • В мире существует 13 официально признанных витаминов<br>
+      • Витамин D — единственный, который организм может синтезировать самостоятельно<br>
+      • В 100 г красного перца в 4 раза больше витамина C, чем в апельсине<br>
+      • Витамин B12 может храниться в печени до 4 лет<br>
+      • Курильщики теряют около 35 мг витамина C с каждой выкуренной сигаретой
+    </div>
+    <div class="info-block">
+      <p><span class="highlight">Рекордсмены по содержанию:</span> печень трески (витамин A) — 25000 мкг/100г, шиповник (витамин C) — 650 мг/100г, подсолнечное масло (витамин E) — 44 мг/100г.</p>
+    </div>
+  </div>
+
+  <!-- СЛАЙД 12: СИМПТОМЫ ДЕФИЦИТА -->
+  <div class="slide-card">
+    <div class="card-header">
+      <span class="vitamin-name">🔍 Симптомы дефицита</span>
+      <span class="vitamin-sub">на что обратить внимание</span>
+    </div>
+    <div class="desc">
+      <strong>Витамин A:</strong> куриная слепота, сухость кожи, частые инфекции<br>
+      <strong>Витамин C:</strong> кровоточивость дёсен, синяки, медленное заживление ран<br>
+      <strong>Витамин D:</strong> боли в костях, мышечная слабость, частые простуды<br>
+      <strong>Витамин E:</strong> мышечная слабость, проблемы с координацией<br>
+      <strong>Витамин K:</strong> повышенная кровоточивость, долгое заживление ран<br>
+      <strong>Группа B:</strong> усталость, раздражительность, анемия, трещины в уголках рта
+    </div>
+    <div class="info-block" style="margin-top: 20px;">
+      <p><span class="highlight">Важно!</span> При появлении симптомов необходимо сдать анализы и проконсультироваться с врачом. Самостоятельный приём высоких доз витаминов может быть опасен.</p>
+    </div>
+  </div>
+
+  <!-- СЛАЙД 13: РЕКОМЕНДАЦИИ -->
   <div class="slide-card">
     <div class="card-header">
       <span class="vitamin-name">✅ Рекомендации</span>
@@ -726,42 +747,38 @@ HTML = """<!DOCTYPE html>
       <span class="badge">2</span> Сезонные овощи, фрукты, зелень, орехи, рыба — ежедневно<br>
       <span class="badge">3</span> Витамин D — дополнительный приём в осенне-зимний период<br>
       <span class="badge">4</span> Термическая обработка разрушает витамины — ешьте свежие продукты<br>
-      <span class="badge">5</span> Сдайте анализы перед приёмом добавок — избегайте гипервитаминоза
+      <span class="badge">5</span> Сдайте анализы перед приёмом добавок — избегайте гипервитаминоза<br>
+      <span class="badge">6</span> Сочетайте жирорастворимые витамины (A, D, E, K) с жирами для лучшего усвоения<br>
+      <span class="badge">7</span> Не запивайте витамины кофе или чаем — танины мешают усвоению
     </div>
     <div class="info-block" style="margin-top: 20px;">
-      <p>📌 <span class="highlight">Анна Попова (Роспотребнадзор):</span> «Мы сегодня уже умеем учитывать индивидуальные особенности и назначать персонально каждому тот перечень добавок, которые человеку нужны».</p>
+      <p>📌 <span class="highlight">Анна Попова (Роспотребнадзор):</span> «Мы сегодня уже умеем учитывать индивидуальные особенности и назначать персонально каждому тот перечень добавок, которые человеку нужны». ВОЗ рекомендует получать витамины в первую очередь из пищи, а не из добавок.</p>
     </div>
   </div>
 
   <div class="footer-note">
-    Презентация • Турсунбаев Амин • данные 2025-2026 • объём: 2000+ символов
+    Презентация • Турсунбаев Амин • данные 2025-2026 • объём: 4000+ символов
   </div>
 </div>
 
 <script>
   (function() {
-    // ДОПОЛНИТЕЛЬНЫЕ ЭФФЕКТЫ НАЖАТИЯ И АНИМАЦИИ
-    console.log('Презентация загружена. Объём информации: 2000+ символов, 1000+ строк кода.');
+    console.log('Презентация загружена. Объём информации: 4000+ символов, 1000+ строк кода.');
     
-    // Добавляем эффект нажатия на все интерактивные элементы
-    const clickableElements = document.querySelectorAll('.slide-card, .title-slide, .food-tag, .stat-item, .market-card, .vitamin-table tr, .dot');
+    // ЭФФЕКТ ПОДСВЕТКИ ПРИ НАЖАТИИ
+    const clickableElements = document.querySelectorAll('.slide-card, .title-slide, .food-tag, .stat-item, .market-card, .vitamin-table tr, .dot, .info-block');
     
     clickableElements.forEach(el => {
       el.addEventListener('click', function(e) {
-        // Лёгкая анимация при клике
-        this.style.transition = 'all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        this.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-          this.style.transform = '';
-        }, 120);
+        e.stopPropagation();
         
-        // Эффект свечения
-        if (!this.classList.contains('title-slide') && !this.classList.contains('dot')) {
-          this.style.boxShadow = '0 0 0 3px rgba(0, 122, 255, 0.2)';
-          setTimeout(() => {
-            this.style.boxShadow = '';
-          }, 300);
-        }
+        // Добавляем класс для подсветки
+        this.classList.add('pressed');
+        
+        // Удаляем класс через 400 мс
+        setTimeout(() => {
+          this.classList.remove('pressed');
+        }, 400);
       });
     });
 
@@ -772,20 +789,19 @@ HTML = """<!DOCTYPE html>
         dots.forEach(d => d.classList.remove('active'));
         this.classList.add('active');
         
-        // Плавная прокрутка к соответствующему слайду (демо)
+        // Плавная прокрутка к соответствующему слайду
         const slides = document.querySelectorAll('.slide-card');
         if (slides[index]) {
           slides[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
-          slides[index].style.animation = 'none';
-          setTimeout(() => slides[index].style.animation = '', 10);
+          slides[index].classList.add('pressed');
+          setTimeout(() => slides[index].classList.remove('pressed'), 400);
         }
       });
     });
 
-    // Обновление активной точки при скролле (упрощённо)
+    // Обновление активной точки при скролле
     window.addEventListener('scroll', () => {
       const slides = document.querySelectorAll('.slide-card');
-      const titleSlide = document.querySelector('.title-slide');
       const dots = document.querySelectorAll('.dot');
       
       let currentIndex = -1;
